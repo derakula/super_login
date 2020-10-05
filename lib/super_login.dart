@@ -212,6 +212,7 @@ class FlutterLogin extends StatefulWidget {
     this.logo,
     this.messages,
     this.theme,
+    this.usernameValidator,
     this.emailValidator,
     this.passwordValidator,
     this.onSubmitAnimationCompleted,
@@ -244,6 +245,9 @@ class FlutterLogin extends StatefulWidget {
   /// widget
   final LoginTheme theme;
 
+  /// invalid, or null otherwise
+  final FormFieldValidator<String> usernameValidator;
+
   /// Email validating logic, Returns an error string to display if the input is
   /// invalid, or null otherwise
   final FormFieldValidator<String> emailValidator;
@@ -268,6 +272,13 @@ class FlutterLogin extends StatefulWidget {
   /// release mode, this will be overrided to false regardless of the value
   /// passed in
   final bool showDebugButtons;
+
+  static final FormFieldValidator<String> defaultUsernameValidator = (value) {
+    if (value.isEmpty || value.length <= 2) {
+      return 'Username is too short!';
+    }
+    return null;
+  };
 
   static final FormFieldValidator<String> defaultEmailValidator = (value) {
     if (value.isEmpty || !Regex.email.hasMatch(value)) {
@@ -536,6 +547,8 @@ class _FlutterLoginState extends State<FlutterLogin>
     const cardInitialHeight = 300;
     final cardTopPosition = deviceSize.height / 2 - cardInitialHeight / 2;
     final headerHeight = cardTopPosition - headerMargin;
+    final usernameValidator =
+        widget.usernameValidator ?? FlutterLogin.defaultUsernameValidator;
     final emailValidator =
         widget.emailValidator ?? FlutterLogin.defaultEmailValidator;
     final passwordValidator =
@@ -577,6 +590,7 @@ class _FlutterLoginState extends State<FlutterLogin>
                         key: authCardKey,
                         padding: EdgeInsets.only(top: cardTopPosition),
                         loadingController: _loadingController,
+                        usernameValidator: usernameValidator,
                         emailValidator: emailValidator,
                         passwordValidator: passwordValidator,
                         onSubmit: _reverseHeaderAnimation,

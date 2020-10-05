@@ -24,6 +24,7 @@ class AuthCard extends StatefulWidget {
     Key key,
     this.padding = const EdgeInsets.all(0),
     this.loadingController,
+    this.usernameValidator,
     this.emailValidator,
     this.passwordValidator,
     this.onSubmit,
@@ -32,6 +33,7 @@ class AuthCard extends StatefulWidget {
 
   final EdgeInsets padding;
   final AnimationController loadingController;
+  final FormFieldValidator<String> usernameValidator;
   final FormFieldValidator<String> emailValidator;
   final FormFieldValidator<String> passwordValidator;
   final Function onSubmit;
@@ -286,6 +288,7 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
                     loadingController: _isLoadingFirstTime
                         ? _formLoadingController
                         : (_formLoadingController..value = 1.0),
+                    usernameValidator: widget.usernameValidator,
                     emailValidator: widget.emailValidator,
                     passwordValidator: widget.passwordValidator,
                     onSwitchRecoveryPassword: () => _switchRecovery(true),
@@ -329,6 +332,7 @@ class _LoginCard extends StatefulWidget {
   _LoginCard({
     Key key,
     this.loadingController,
+    @required this.usernameValidator,
     @required this.emailValidator,
     @required this.passwordValidator,
     @required this.onSwitchRecoveryPassword,
@@ -337,6 +341,7 @@ class _LoginCard extends StatefulWidget {
   }) : super(key: key);
 
   final AnimationController loadingController;
+  final FormFieldValidator<String> usernameValidator;
   final FormFieldValidator<String> emailValidator;
   final FormFieldValidator<String> passwordValidator;
   final Function onSwitchRecoveryPassword;
@@ -353,7 +358,8 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
   final _passwordFocusNode = FocusNode();
   final _confirmPasswordFocusNode = FocusNode();
 
-  TextEditingController _nameController;
+  TextEditingController _usernameController;
+  TextEditingController _emailController;
   TextEditingController _passController;
   TextEditingController _confirmPassController;
 
@@ -379,7 +385,8 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     super.initState();
 
     final auth = Provider.of<Auth>(context, listen: false);
-    _nameController = TextEditingController(text: auth.email);
+    _usernameController = TextEditingController(text: auth.username);
+    _emailController = TextEditingController(text: auth.email);
     _passController = TextEditingController(text: auth.password);
     _confirmPassController = TextEditingController(text: auth.confirmPassword);
 
@@ -467,12 +474,12 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
 
     if (auth.isLogin) {
       error = await auth.onLogin(LoginData(
-        name: auth.email,
+        name: auth.username,
         password: auth.password,
       ));
     } else {
       error = await auth.onSignup(LoginData(
-        name: auth.email,
+        name: auth.username,
         password: auth.password,
       ));
     }
@@ -499,13 +506,30 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     return true;
   }
 
-  Widget _buildNameField(double width, LoginMessages messages, Auth auth) {
+  Widget _buildUsernameField(double width, LoginMessages messages, Auth auth) {
     return AnimatedTextFormField(
-      controller: _nameController,
+      controller: _usernameController,
       width: width,
       loadingController: _loadingController,
       interval: _nameTextFieldLoadingAnimationInterval,
       labelText: messages.usernameHint,
+      prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        FocusScope.of(context).requestFocus(_passwordFocusNode);
+      },
+      validator: widget.usernameValidator,
+      onSaved: (value) => auth.username = value,
+    );
+  }
+
+  Widget _buildEmailField(double width, LoginMessages messages, Auth auth) {
+    return AnimatedTextFormField(
+      controller: _emailController,
+      width: width,
+      loadingController: _loadingController,
+      interval: _nameTextFieldLoadingAnimationInterval,
+      labelText: messages.emailHint,
       prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
@@ -630,6 +654,22 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       key: _formKey,
       child: Column(
         children: [
+          ExpandableContainer(
+            backgroundColor: theme.accentColor,
+            controller: _switchAuthController,
+            initialState: isLogin
+                ? ExpandableContainerState.shrunk
+                : ExpandableContainerState.expanded,
+            alignment: Alignment.topLeft,
+            color: theme.cardTheme.color,
+            width: cardWidth,
+            padding: EdgeInsets.symmetric(
+              horizontal: cardPadding,
+              vertical: 10,
+            ),
+            onExpandCompleted: () => _postSwitchAuthController.forward(),
+            child: _buildEmailField(textFieldWidth, messages, auth),
+          ),
           Container(
             padding: EdgeInsets.only(
               left: cardPadding,
@@ -640,7 +680,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _buildNameField(textFieldWidth, messages, auth),
+                _buildUsernameField(textFieldWidth, messages, auth),
                 SizedBox(height: 20),
                 _buildPasswordField(textFieldWidth, messages, auth),
                 SizedBox(height: 10),
@@ -705,7 +745,7 @@ class _RecoverCardState extends State<_RecoverCard>
     with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formRecoverKey = GlobalKey();
 
-  TextEditingController _nameController;
+  TextEditingController _emailController;
 
   var _isSubmitting = false;
 
@@ -716,7 +756,7 @@ class _RecoverCardState extends State<_RecoverCard>
     super.initState();
 
     final auth = Provider.of<Auth>(context, listen: false);
-    _nameController = new TextEditingController(text: auth.email);
+    _emailController = new TextEditingController(text: auth.email);
 
     _submitController = AnimationController(
       vsync: this,
@@ -757,9 +797,9 @@ class _RecoverCardState extends State<_RecoverCard>
 
   Widget _buildRecoverNameField(double width, LoginMessages messages, Auth auth) {
     return AnimatedTextFormField(
-      controller: _nameController,
+      controller: _emailController,
       width: width,
-      labelText: messages.usernameHint,
+      labelText: messages.emailHint,
       prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.done,
