@@ -474,12 +474,13 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
 
     if (auth.isLogin) {
       error = await auth.onLogin(LoginData(
-        name: auth.username,
+        username: auth.username,
         password: auth.password,
       ));
     } else {
       error = await auth.onSignup(LoginData(
-        name: auth.username,
+        username: auth.username,
+        email: auth.email,
         password: auth.password,
       ));
     }
@@ -654,22 +655,6 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       key: _formKey,
       child: Column(
         children: [
-          ExpandableContainer(
-            backgroundColor: theme.accentColor,
-            controller: _switchAuthController,
-            initialState: isLogin
-                ? ExpandableContainerState.shrunk
-                : ExpandableContainerState.expanded,
-            alignment: Alignment.topLeft,
-            color: theme.cardTheme.color,
-            width: cardWidth,
-            padding: EdgeInsets.symmetric(
-              horizontal: cardPadding,
-              vertical: 10,
-            ),
-            onExpandCompleted: () => _postSwitchAuthController.forward(),
-            child: _buildEmailField(textFieldWidth, messages, auth),
-          ),
           Container(
             padding: EdgeInsets.only(
               left: cardPadding,
@@ -681,7 +666,41 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _buildUsernameField(textFieldWidth, messages, auth),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
+          ExpandableContainer(
+            backgroundColor: theme.accentColor,
+            controller: _switchAuthController,
+            initialState: isLogin
+                ? ExpandableContainerState.shrunk
+                : ExpandableContainerState.expanded,
+            alignment: Alignment.topLeft,
+            color: theme.cardTheme.color,
+            width: cardWidth,
+            padding: EdgeInsets.only(
+              left: cardPadding,
+              right: cardPadding,
+            ),
+            onExpandCompleted: () => _postSwitchAuthController.forward(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildEmailField(textFieldWidth, messages, auth),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              left: cardPadding,
+              right: cardPadding,
+            ),
+            width: cardWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
                 _buildPasswordField(textFieldWidth, messages, auth),
                 SizedBox(height: 10),
               ],
@@ -696,12 +715,18 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
             alignment: Alignment.topLeft,
             color: theme.cardTheme.color,
             width: cardWidth,
-            padding: EdgeInsets.symmetric(
-              horizontal: cardPadding,
-              vertical: 10,
+            padding: EdgeInsets.only(
+              left: cardPadding,
+              right: cardPadding,
             ),
             onExpandCompleted: () => _postSwitchAuthController.forward(),
-            child: _buildConfirmPasswordField(textFieldWidth, messages, auth),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildConfirmPasswordField(textFieldWidth, messages, auth),
+                SizedBox(height: 10),
+              ],
+            ),
           ),
           Container(
             padding: Paddings.fromRBL(cardPadding),

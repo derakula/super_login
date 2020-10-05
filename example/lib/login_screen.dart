@@ -13,19 +13,19 @@ class LoginScreen extends StatelessWidget {
 
   Future<String> _loginUser(LoginData data) {
     return Future.delayed(loginTime).then((_) {
-      if (!mockUsers.containsKey(data.name)) {
+      if (!mockUsers.containsKey(data.username)) {
         return 'Username not exists';
       }
-      if (mockUsers[data.name] != data.password) {
+      if (mockUsers[data.username] != data.password) {
         return 'Password does not match';
       }
       return null;
     });
   }
 
-  Future<String> _recoverPassword(String name) {
+  Future<String> _recoverPassword(String username) {
     return Future.delayed(loginTime).then((_) {
-      if (!mockUsers.containsKey(name)) {
+      if (!mockUsers.containsKey(username)) {
         return 'Username not exists';
       }
       return null;
@@ -39,6 +39,19 @@ class LoginScreen extends StatelessWidget {
       logo: 'assets/images/ecorp.png',
       logoTag: Constants.logoTag,
       titleTag: Constants.titleTag,
+      messages: LoginMessages(
+        usernameHint: 'Username',
+        passwordHint: 'Password',
+        confirmPasswordHint: 'Ulangi Password',
+        loginButton: 'LOGIN',
+        signupButton: 'DAFTAR',
+        forgotPasswordButton: 'Lupa Password?',
+        recoverPasswordButton: 'Reset Password',
+        goBackButton: 'BACK',
+        confirmPasswordError: 'Password tidak sama',
+        recoverPasswordDescription: 'Konfirmasi password akan dikirim melalui email anda.',
+        recoverPasswordSuccess: 'Password rescued successfully',
+      ),
       passwordValidator: (value) {
         if (value.isEmpty) {
           return 'Password is empty';
@@ -47,13 +60,13 @@ class LoginScreen extends StatelessWidget {
       },
       onLogin: (loginData) {
         print('Login info');
-        print('Name: ${loginData.name}');
+        print('Name: ${loginData.username}');
         print('Password: ${loginData.password}');
         return _loginUser(loginData);
       },
       onSignup: (loginData) {
         print('Signup info');
-        print('Name: ${loginData.name}');
+        print('Name: ${loginData.username}');
         print('Password: ${loginData.password}');
         return _loginUser(loginData);
       },

@@ -2,25 +2,27 @@ import 'package:flutter/foundation.dart';
 import 'package:quiver/core.dart';
 
 class LoginData {
-  final String name;
+  final String username;
+  final String email;
   final String password;
 
   LoginData({
-    @required this.name,
+    @required this.username,
+    this.email,
     @required this.password,
   });
 
   @override
   String toString() {
-    return '$runtimeType($name, $password)';
+    return '$runtimeType($username, $password)';
   }
 
   bool operator ==(Object other) {
     if (other is LoginData) {
-      return name == other.name && password == other.password;
+      return username == other.username && password == other.password;
     }
     return false;
   }
 
-  int get hashCode => hash2(name, password);
+  int get hashCode => hash2(username, password);
 }
