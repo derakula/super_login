@@ -1,6 +1,6 @@
 import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:flutter/material.dart';
-import 'package:flutter_login/flutter_login.dart';
+import 'package:super_login/super_login.dart';
 import 'constants.dart';
 import 'custom_route.dart';
 import 'dashboard_screen.dart';
@@ -34,10 +34,10 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = BorderRadius.vertical(
-      bottom: Radius.circular(10.0),
-      top: Radius.circular(20.0),
-    );
+    //final inputBorder = BorderRadius.vertical(
+    //  bottom: Radius.circular(10.0),
+   //   top: Radius.circular(20.0),
+    //);
 
     return FlutterLogin(
       title: Constants.appName,

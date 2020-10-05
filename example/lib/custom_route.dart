@@ -18,9 +18,9 @@ class FadePageRoute<T> extends MaterialPageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    if (settings.isInitialRoute) {
-      return child;
-    }
+    //if (settings.isInitialRoute) {
+    //  return child;
+    //}
 
     return FadeTransition(
       opacity: animation,

@@ -16,7 +16,7 @@ class LoginMessages with ChangeNotifier {
     this.recoverPasswordSuccess: defaultRecoverPasswordSuccess,
   });
 
-  static const defaultUsernameHint = 'Email';
+  static const defaultUsernameHint = 'Username';
   static const defaultPasswordHint = 'Password';
   static const defaultConfirmPasswordHint = 'Confirm Password';
   static const defaultForgotPasswordButton = 'Forgot Password?';
