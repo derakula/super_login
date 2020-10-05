@@ -1,7 +1,7 @@
 name: super_login
-description: A login widget with login/signup functionalities to help speed up development
+description: A ready to use login/signup/recovery widget with functionalities and animations
 version: 1.0.0
-author: Dera Kuswari <derakuswari@gmail.com>
+author: Dera Kuswari <updera@gmail.com>
 homepage: https://github.com/derakula/super_login
 
 environment:
