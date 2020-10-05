@@ -14,6 +14,7 @@ import 'animated_text_form_field.dart';
 import '../providers/auth.dart';
 import '../providers/login_messages.dart';
 import '../models/login_data.dart';
+import '../models/signup_data.dart';
 import '../dart_helper.dart';
 import '../matrix.dart';
 import '../paddings.dart';
@@ -449,6 +450,8 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     final auth = Provider.of<Auth>(context, listen: false);
     final newAuthMode = auth.switchAuth();
 
+    _formKey.currentState.reset();
+
     if (newAuthMode == AuthMode.Signup) {
       _switchAuthController.forward();
     } else {
@@ -478,7 +481,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
         password: auth.password,
       ));
     } else {
-      error = await auth.onSignup(LoginData(
+      error = await auth.onSignup(SignUpData(
         username: auth.username,
         email: auth.email,
         password: auth.password,
@@ -537,7 +540,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       onFieldSubmitted: (value) {
         FocusScope.of(context).requestFocus(_passwordFocusNode);
       },
-      validator: widget.emailValidator,
+      validator: auth.isLogin ? null : widget.emailValidator,
       onSaved: (value) => auth.email = value,
     );
   }

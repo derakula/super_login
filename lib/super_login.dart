@@ -7,12 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'src/providers/auth.dart';
 import 'src/providers/login_theme.dart';
 import 'src/widgets/null_widget.dart';
 import 'theme.dart';
 import 'src/dart_helper.dart';
 import 'src/color_helper.dart';
-import 'src/providers/auth.dart';
 import 'src/providers/login_messages.dart';
 import 'src/regex.dart';
 import 'src/widgets/auth_card.dart';
@@ -20,6 +20,7 @@ import 'src/widgets/fade_in.dart';
 import 'src/widgets/hero_text.dart';
 import 'src/widgets/gradient_box.dart';
 export 'src/models/login_data.dart';
+export 'src/models/signup_data.dart';
 export 'src/providers/login_messages.dart';
 export 'src/providers/login_theme.dart';
 import 'src/constants.dart';
@@ -222,10 +223,10 @@ class FlutterLogin extends StatefulWidget {
   }) : super(key: key);
 
   /// Called when the user hit the submit button when in sign up mode
-  final AuthCallback onSignup;
+  final AuthSignupCallback onSignup;
 
   /// Called when the user hit the submit button when in login mode
-  final AuthCallback onLogin;
+  final AuthLoginCallback onLogin;
 
   /// Called when the user hit the submit button when in recover password mode
   final RecoverCallback onRecoverPassword;

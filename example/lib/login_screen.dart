@@ -23,6 +23,12 @@ class LoginScreen extends StatelessWidget {
     });
   }
 
+  Future<String> _signUp(SignUpData data) {
+    return Future.delayed(loginTime).then((_) {
+      return null;
+    });
+  }
+
   Future<String> _recoverPassword(String username) {
     return Future.delayed(loginTime).then((_) {
       if (!mockUsers.containsKey(username)) {
@@ -64,21 +70,22 @@ class LoginScreen extends StatelessWidget {
         print('Password: ${loginData.password}');
         return _loginUser(loginData);
       },
-      onSignup: (loginData) {
+      onSignup: (data) {
         print('Signup info');
-        print('Name: ${loginData.username}');
-        print('Password: ${loginData.password}');
-        return _loginUser(loginData);
+        print('Name: ${data.username}');
+        print('email: ${data.email}');
+        print('Password: ${data.password}');
+        return _signUp(data);
       },
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(FadePageRoute(
           builder: (context) => DashboardScreen(),
         ));
       },
-      onRecoverPassword: (name) {
+      onRecoverPassword: (email) {
         print('Recover password info');
-        print('Name: $name');
-        return _recoverPassword(name);
+        print('Name: $email');
+        return _recoverPassword(email);
         // Show new password dialog
       },
       showDebugButtons: true,
