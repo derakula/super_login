@@ -214,6 +214,7 @@ class FlutterLogin extends StatefulWidget {
     this.messages,
     this.theme,
     this.usernameValidator,
+    this.fullNameValidator,
     this.emailValidator,
     this.passwordValidator,
     this.onSubmitAnimationCompleted,
@@ -248,6 +249,8 @@ class FlutterLogin extends StatefulWidget {
 
   /// invalid, or null otherwise
   final FormFieldValidator<String> usernameValidator;
+  
+  final FormFieldValidator<String> fullNameValidator;
 
   /// Email validating logic, Returns an error string to display if the input is
   /// invalid, or null otherwise
@@ -277,6 +280,13 @@ class FlutterLogin extends StatefulWidget {
   static final FormFieldValidator<String> defaultUsernameValidator = (value) {
     if (value.isEmpty || value.length <= 2) {
       return 'Username is too short!';
+    }
+    return null;
+  };
+
+  static final FormFieldValidator<String> defaultFullNameValidator = (value) {
+    if (value.isEmpty || value.length <= 2) {
+      return 'Full Name is too short!';
     }
     return null;
   };
@@ -550,6 +560,9 @@ class _FlutterLoginState extends State<FlutterLogin>
     final headerHeight = cardTopPosition - headerMargin;
     final usernameValidator =
         widget.usernameValidator ?? FlutterLogin.defaultUsernameValidator;
+    final fullNameValidator =
+        widget.fullNameValidator ?? FlutterLogin.defaultFullNameValidator;
+
     final emailValidator =
         widget.emailValidator ?? FlutterLogin.defaultEmailValidator;
     final passwordValidator =
@@ -592,6 +605,7 @@ class _FlutterLoginState extends State<FlutterLogin>
                         padding: EdgeInsets.only(top: cardTopPosition),
                         loadingController: _loadingController,
                         usernameValidator: usernameValidator,
+                        fullNameValidator: fullNameValidator,
                         emailValidator: emailValidator,
                         passwordValidator: passwordValidator,
                         onSubmit: _reverseHeaderAnimation,

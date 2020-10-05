@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class LoginMessages with ChangeNotifier {
   LoginMessages({
     this.usernameHint: defaultUsernameHint,
+    this.fullNameHint: defaultFullNameHint,
     this.emailHint: defaultEmailHint,
     this.passwordHint: defaultPasswordHint,
     this.confirmPasswordHint: defaultConfirmPasswordHint,
@@ -18,6 +19,7 @@ class LoginMessages with ChangeNotifier {
   });
 
   static const defaultUsernameHint = 'Username';
+  static const defaultFullNameHint = 'Full Name';
   static const defaultEmailHint = 'Email';
   static const defaultPasswordHint = 'Password';
   static const defaultConfirmPasswordHint = 'Confirm Password';
@@ -34,6 +36,8 @@ class LoginMessages with ChangeNotifier {
 
   /// Hint text of the user name [TextField]
   final String usernameHint;
+
+  final String fullNameHint;
 
   /// Hint text of the email [TextField]
   final String emailHint;

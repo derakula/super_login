@@ -26,6 +26,7 @@ class AuthCard extends StatefulWidget {
     this.padding = const EdgeInsets.all(0),
     this.loadingController,
     this.usernameValidator,
+    this.fullNameValidator,
     this.emailValidator,
     this.passwordValidator,
     this.onSubmit,
@@ -35,6 +36,7 @@ class AuthCard extends StatefulWidget {
   final EdgeInsets padding;
   final AnimationController loadingController;
   final FormFieldValidator<String> usernameValidator;
+  final FormFieldValidator<String> fullNameValidator;
   final FormFieldValidator<String> emailValidator;
   final FormFieldValidator<String> passwordValidator;
   final Function onSubmit;
@@ -290,6 +292,7 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
                         ? _formLoadingController
                         : (_formLoadingController..value = 1.0),
                     usernameValidator: widget.usernameValidator,
+                    fullNameValidator: widget.fullNameValidator,
                     emailValidator: widget.emailValidator,
                     passwordValidator: widget.passwordValidator,
                     onSwitchRecoveryPassword: () => _switchRecovery(true),
@@ -334,6 +337,7 @@ class _LoginCard extends StatefulWidget {
     Key key,
     this.loadingController,
     @required this.usernameValidator,
+    @required this.fullNameValidator,
     @required this.emailValidator,
     @required this.passwordValidator,
     @required this.onSwitchRecoveryPassword,
@@ -343,6 +347,7 @@ class _LoginCard extends StatefulWidget {
 
   final AnimationController loadingController;
   final FormFieldValidator<String> usernameValidator;
+  final FormFieldValidator<String> fullNameValidator;
   final FormFieldValidator<String> emailValidator;
   final FormFieldValidator<String> passwordValidator;
   final Function onSwitchRecoveryPassword;
@@ -360,6 +365,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
   final _confirmPasswordFocusNode = FocusNode();
 
   TextEditingController _usernameController;
+  TextEditingController _fullNameController;
   TextEditingController _emailController;
   TextEditingController _passController;
   TextEditingController _confirmPassController;
@@ -387,6 +393,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
 
     final auth = Provider.of<Auth>(context, listen: false);
     _usernameController = TextEditingController(text: auth.username);
+    _fullNameController = TextEditingController(text: auth.fullname);
     _emailController = TextEditingController(text: auth.email);
     _passController = TextEditingController(text: auth.password);
     _confirmPassController = TextEditingController(text: auth.confirmPassword);
@@ -483,6 +490,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     } else {
       error = await auth.onSignup(SignUpData(
         username: auth.username,
+        fullname: auth.fullname,
         email: auth.email,
         password: auth.password,
       ));
@@ -520,10 +528,33 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
-        FocusScope.of(context).requestFocus(_passwordFocusNode);
+
+        if ( auth.isLogin ){
+          FocusScope.of(context).requestFocus(_passwordFocusNode);
+        } else {
+          FocusScope.of(context).nextFocus();
+        }
+          
       },
       validator: widget.usernameValidator,
       onSaved: (value) => auth.username = value,
+    );
+  }
+
+  Widget _buildFullNameField(double width, LoginMessages messages, Auth auth) {
+    return AnimatedTextFormField(
+      controller: _fullNameController,
+      width: width,
+      loadingController: _loadingController,
+      interval: _nameTextFieldLoadingAnimationInterval,
+      labelText: messages.fullNameHint,
+      prefixIcon: Icon(FontAwesomeIcons.idCard),
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        FocusScope.of(context).nextFocus();
+      },
+      validator: auth.isLogin ? null : widget.fullNameValidator,
+      onSaved: (value) => auth.fullname = value,
     );
   }
 
@@ -534,11 +565,11 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       loadingController: _loadingController,
       interval: _nameTextFieldLoadingAnimationInterval,
       labelText: messages.emailHint,
-      prefixIcon: Icon(FontAwesomeIcons.solidUserCircle),
+      prefixIcon: Icon(FontAwesomeIcons.envelope),
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
-        FocusScope.of(context).requestFocus(_passwordFocusNode);
+        FocusScope.of(context).nextFocus();
       },
       validator: auth.isLogin ? null : widget.emailValidator,
       onSaved: (value) => auth.email = value,
@@ -630,17 +661,20 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       offset: .5,
       curve: _textButtonLoadingAnimationInterval,
       fadeDirection: FadeDirection.topToBottom,
-      child: FlatButton(
-        child: AnimatedText(
-          text: auth.isSignup ? messages.loginButton : messages.signupButton,
-          textRotation: AnimatedTextRotation.down,
+      child: Container(
+          margin: EdgeInsets.only(top: 20),
+          child: FlatButton(
+            child: AnimatedText(
+              text: auth.isSignup ? messages.loginButton : messages.signupButton,
+              textRotation: AnimatedTextRotation.down,
+            ),
+            disabledTextColor: theme.primaryColor,
+            onPressed: buttonEnabled ? _switchAuthMode : null,
+            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            textColor: theme.primaryColor,
         ),
-        disabledTextColor: theme.primaryColor,
-        onPressed: buttonEnabled ? _switchAuthMode : null,
-        padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        textColor: theme.primaryColor,
-      ),
+      )
     );
   }
 
@@ -651,7 +685,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     final messages = Provider.of<LoginMessages>(context, listen: false);
     final theme = Theme.of(context);
     final deviceSize = MediaQuery.of(context).size;
-    final cardWidth = min(deviceSize.width * 0.75, 360.0);
+    final cardWidth = min(deviceSize.width * 0.85, 360.0);
     const cardPadding = 16.0;
     final textFieldWidth = cardWidth - cardPadding * 2;
     final authForm = Form(
@@ -685,6 +719,30 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: cardPadding,
               right: cardPadding,
+              top: 2,
+            ),
+            onExpandCompleted: () => _postSwitchAuthController.forward(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildFullNameField(textFieldWidth, messages, auth),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
+          ExpandableContainer(
+            backgroundColor: theme.accentColor,
+            controller: _switchAuthController,
+            initialState: isLogin
+                ? ExpandableContainerState.shrunk
+                : ExpandableContainerState.expanded,
+            alignment: Alignment.topLeft,
+            color: theme.cardTheme.color,
+            width: cardWidth,
+            padding: EdgeInsets.only(
+              left: cardPadding,
+              right: cardPadding,
+              top: 2,
             ),
             onExpandCompleted: () => _postSwitchAuthController.forward(),
             child: Column(
@@ -699,6 +757,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: cardPadding,
               right: cardPadding,
+              top: 2
             ),
             width: cardWidth,
             child: Column(
@@ -721,6 +780,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: cardPadding,
               right: cardPadding,
+              top: 2
             ),
             onExpandCompleted: () => _postSwitchAuthController.forward(),
             child: Column(
@@ -864,7 +924,7 @@ class _RecoverCardState extends State<_RecoverCard>
     final auth = Provider.of<Auth>(context, listen: false);
     final messages = Provider.of<LoginMessages>(context, listen: false);
     final deviceSize = MediaQuery.of(context).size;
-    final cardWidth = min(deviceSize.width * 0.75, 360.0);
+    final cardWidth = min(deviceSize.width * 0.85, 360.0);
     const cardPadding = 16.0;
     final textFieldWidth = cardWidth - cardPadding * 2;
 

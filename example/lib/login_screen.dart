@@ -47,13 +47,14 @@ class LoginScreen extends StatelessWidget {
       titleTag: Constants.titleTag,
       messages: LoginMessages(
         usernameHint: 'Username',
+        fullNameHint: 'Nama Lengkap',
         passwordHint: 'Password',
         confirmPasswordHint: 'Ulangi Password',
         loginButton: 'LOGIN',
         signupButton: 'DAFTAR',
         forgotPasswordButton: 'Lupa Password?',
         recoverPasswordButton: 'Reset Password',
-        goBackButton: 'BACK',
+        goBackButton: 'KEMBALI',
         confirmPasswordError: 'Password tidak sama',
         recoverPasswordDescription: 'Konfirmasi password akan dikirim melalui email anda.',
         recoverPasswordSuccess: 'Password rescued successfully',
@@ -73,6 +74,7 @@ class LoginScreen extends StatelessWidget {
       onSignup: (data) {
         print('Signup info');
         print('Name: ${data.username}');
+        print('Name: ${data.fullname}');
         print('email: ${data.email}');
         print('Password: ${data.password}');
         return _signUp(data);
