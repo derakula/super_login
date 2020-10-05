@@ -1,4 +1,4 @@
-# example
+# superlogin_example
 
 A new Flutter project.
 

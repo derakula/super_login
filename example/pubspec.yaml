@@ -1,9 +1,9 @@
-name: login_example
-description: Example of flutter_login package.
+name: superlogin_example
+description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -11,15 +11,18 @@ dependencies:
   super_login:
     path: ../
   cupertino_icons: ^0.1.2
-  font_awesome_flutter: ^8.5.0
+  font_awesome_flutter: ^8.8.1
   intl: ^0.16.1
-  # dummy package to test https://github.com/NearHuscarl/flutter_login/issues/35
   provider: ^4.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
 flutter:
   uses-material-design: true
 

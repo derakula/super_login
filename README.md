@@ -1,13 +1,6 @@
-# Flutter Login
+# Super Login Flutter
 
-`FlutterLogin` is a ready-made login/signup widget with many animation effects to
-demonstrate the capabilities of Flutter
-
-<p align="center">
-  <a href='https://i.imgur.com/z3FJSe7.mp4'>
-    <img src='https://github.com/NearHuscarl/flutter_login/raw/master/demo/demo.gif' width=320>
-  </a>
-</p>
+`SuperLogin` adalah widget masuk / daftar siap pakai dengan banyak efek animasi untuk mendemonstrasikan kemampuan Flutter
 
 ## Installation
 
