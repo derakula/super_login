@@ -83,7 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: Hero(
               tag: Constants.logoTag,
               child: Image.asset(
-                'assets/images/ecorp.png',
+                'assets/images/logo.png',
                 filterQuality: FilterQuality.high,
                 height: 30,
               ),

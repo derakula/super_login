@@ -42,7 +42,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SuperLogin(
       title: null,
-      logo: 'assets/images/ecorp.png',
+      logo: 'assets/images/logo.png',
       logoTag: Constants.logoTag,
       titleTag: Constants.titleTag,
       messages: LoginMessages(
