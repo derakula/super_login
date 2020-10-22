@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:quiver/core.dart';
 
-class RecoverEmail {
+class RecoverPassword {
   final String email;
 
-  RecoverEmail({
+  RecoverPassword({
     @required this.email,
   });
 
@@ -14,7 +14,7 @@ class RecoverEmail {
   }
 
   bool operator ==(Object other) {
-    if (other is RecoverEmail) {
+    if (other is RecoverPassword) {
       return username == other.username && password == other.password;
     }
     return false;
